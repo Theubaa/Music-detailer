@@ -102,13 +102,16 @@ export default async function handler(req, res) {
       fs.copyFileSync(audioFile.filepath, tempFilePath);
 
       // Extract features from the audio file
+      const startTime = Date.now();
       const analysisResult = await extractFeaturesFromFile(tempFilePath);
+      const processingTime = Date.now() - startTime;
 
       // Return the analysis results
       return res.status(200).json({
         success: true,
         message: 'Audio analysis completed successfully',
-        data: analysisResult,
+        ...analysisResult,
+        processingTime,
         fileInfo: {
           originalName: audioFile.originalFilename,
           size: audioFile.size,
